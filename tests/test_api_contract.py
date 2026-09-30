@@ -1,11 +1,11 @@
+import importlib
 import os
+import sys
 from pathlib import Path
 
-import pytest
 from fastapi.testclient import TestClient
 
 
-@pytest.fixture()
 def client(tmp_path: Path) -> TestClient:
     """Create a TestClient backed by a temporary SQLite database."""
     db_path = tmp_path / "test_library.db"
@@ -14,10 +14,23 @@ def client(tmp_path: Path) -> TestClient:
     os.environ["LITTLE_LIBRARY_DB_PATH"] = str(db_path)
 
     # Import after setting env var so startup initializes the correct DB.
-    from main import app  # noqa: WPS433
+    #
+    # We reload the module per test to ensure `startup` honors the env var,
+    # even if `main` was imported by a previous test.
+    if "main" in sys.modules:
+        main = importlib.reload(sys.modules["main"])
+    else:
+        import main  # noqa: F401
 
-    with TestClient(app) as test_client:
-        yield test_client
+        main = sys.modules["main"]
+
+    app = main.app
+
+    try:
+        with TestClient(app) as test_client:
+            yield test_client
+    finally:
+        os.environ.pop("LITTLE_LIBRARY_DB_PATH", None)
 
 
 def _create_book(client: TestClient, title: str, author: str = "", isbn: str = "") -> dict:
