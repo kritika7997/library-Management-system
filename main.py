@@ -1,5 +1,6 @@
 from pathlib import Path
 from contextlib import contextmanager
+import os
 import sqlite3
 from typing import Iterator
 
@@ -10,7 +11,13 @@ from pydantic import BaseModel, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / "library.db"
+
+_db_override = os.getenv("LIBRARY_DB_PATH")
+if _db_override:
+    override_path = Path(_db_override)
+    DATABASE_PATH = (BASE_DIR / override_path).resolve() if not override_path.is_absolute() else override_path.resolve()
+else:
+    DATABASE_PATH = BASE_DIR / "library.db"
 
 app = FastAPI(title="Little Library")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
