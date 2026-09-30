@@ -3,9 +3,11 @@ import os
 import sys
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 
+@pytest.fixture()
 def client(tmp_path: Path) -> TestClient:
     """Create a TestClient backed by a temporary SQLite database."""
     db_path = tmp_path / "test_library.db"
