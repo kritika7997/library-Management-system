@@ -13,6 +13,13 @@ python -m uvicorn main:app --reload
 
 Open http://127.0.0.1:8000. The SQLite database (`library.db`) is created beside `main.py` when the app starts. API documentation is available at http://127.0.0.1:8000/docs.
 
+## Run tests locally
+
+```powershell
+python -m pip install -r requirements-dev.txt
+pytest
+```
+
 ## Included
 
 - Add a book with a title, author, and optional ISBN
@@ -24,5 +31,5 @@ Open http://127.0.0.1:8000. The SQLite database (`library.db`) is created beside
 
 - Member accounts, loans, due dates, or fines
 - Editing or removing books
-- Authentication, authorization, or automated tests
+- Authentication or authorization
 - A production-ready frontend or deployment setup
