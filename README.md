@@ -19,10 +19,18 @@ Open http://127.0.0.1:8000. The SQLite database (`library.db`) is created beside
 - Browse and search the collection
 - Mark a book available or checked out
 - SQLite persistence
+- Automated tests
+
+## Run tests
+
+```powershell
+python -m pip install -r requirements.txt
+pytest
+```
 
 ## Not included yet
 
 - Member accounts, loans, due dates, or fines
 - Editing or removing books
-- Authentication, authorization, or automated tests
+- Authentication or authorization
 - A production-ready frontend or deployment setup
