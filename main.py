@@ -1,5 +1,6 @@
 from pathlib import Path
 from contextlib import contextmanager
+import os
 import sqlite3
 from typing import Iterator
 
@@ -10,7 +11,20 @@ from pydantic import BaseModel, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / "library.db"
+
+
+def get_database_path() -> Path:
+    """
+    Resolve the SQLite database path.
+
+    Tests can override the location by setting LITTLE_LIBRARY_DB_PATH before the
+    app is started (e.g., before creating a TestClient).
+    """
+    configured_path = os.environ.get("LITTLE_LIBRARY_DB_PATH")
+    if configured_path:
+        return Path(configured_path)
+    return BASE_DIR / "library.db"
+
 
 app = FastAPI(title="Little Library")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
@@ -26,15 +40,16 @@ class AvailabilityUpdate(BaseModel):
     is_available: bool
 
 
-def connect_database() -> sqlite3.Connection:
-    connection = sqlite3.connect(DATABASE_PATH)
+def connect_database(path: Path | None = None) -> sqlite3.Connection:
+    database_path = path or get_database_path()
+    connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     return connection
 
 
 @contextmanager
-def database_connection() -> Iterator[sqlite3.Connection]:
-    connection = connect_database()
+def database_connection(path: Path | None = None) -> Iterator[sqlite3.Connection]:
+    connection = connect_database(path=path)
     try:
         with connection:
             yield connection
@@ -42,8 +57,8 @@ def database_connection() -> Iterator[sqlite3.Connection]:
         connection.close()
 
 
-def initialize_database() -> None:
-    with database_connection() as connection:
+def initialize_database(path: Path | None = None) -> None:
+    with database_connection(path=path) as connection:
         connection.execute(
             """
             CREATE TABLE IF NOT EXISTS books (
@@ -63,7 +78,9 @@ def serialize_book(row: sqlite3.Row) -> dict:
     return book
 
 
-initialize_database()
+@app.on_event("startup")
+def on_startup() -> None:
+    initialize_database()
 
 
 @app.get("/")
