@@ -1,4 +1,5 @@
-import os
+from importlib import reload
+import importlib
 from pathlib import Path
 
 import pytest
@@ -9,14 +10,14 @@ from fastapi.testclient import TestClient
 def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     """Create a TestClient with an isolated SQLite DB.
 
-    The application reads LIBRARY_DB_PATH at import time, so we set it before importing main.
+    The application reads LIBRARY_DB_PATH at import time, so we set it before importing
+    and reloading main for each test.
     """
-
     db_path = tmp_path / "test-library.db"
     monkeypatch.setenv("LIBRARY_DB_PATH", str(db_path))
 
-    # Ensure a clean import for each test so DATABASE_PATH picks up our env var.
-    import main  # noqa: WPS433
+    main = importlib.import_module("main")  # noqa: WPS433
+    reload(main)
 
     return TestClient(main.app)
 
