@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Little Library</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Little Library home"><span class="brand-mark">L</span> little library</a>
+    <span class="topbar-note">A small shelf for your collection</span>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">YOUR COLLECTION</p>
+      <h1 id="page-title">Books, <em>kept close.</em></h1>
+      <p class="intro-copy">A simple place to keep track of what’s on your shelf.</p>
+    </section>
+
+    <section class="workspace" aria-label="Library collection">
+      <aside class="add-panel">
+        <div class="section-heading">
+          <span class="section-number">01</span>
+          <h2>Add a book</h2>
+        </div>
+        <form id="book-form">
+          <label for="title">Title <span aria-hidden="true">*</span></label>
+          <input id="title" name="title" type="text" maxlength="200" placeholder="The book’s title" required>
+
+          <label for="author">Author</label>
+          <input id="author" name="author" type="text" maxlength="200" placeholder="Who wrote it?">
+
+          <label for="isbn">ISBN <span class="optional">OPTIONAL</span></label>
+          <input id="isbn" name="isbn" type="text" maxlength="32" placeholder="ISBN number">
+
+          <button class="add-button" type="submit"><span aria-hidden="true">+</span> Add to shelf</button>
+          <p id="form-message" class="form-message" role="status"></p>
+        </form>
+      </aside>
+
+      <section class="shelf-panel" aria-labelledby="shelf-title">
+        <div class="shelf-heading">
+          <div>
+            <div class="section-heading">
+              <span class="section-number">02</span>
+              <h2 id="shelf-title">On the shelf</h2>
+            </div>
+            <p id="book-count" class="book-count">Loading books...</p>
+          </div>
+          <label class="search-box" for="book-search">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="book-search" type="search" placeholder="Find a book" aria-label="Search books">
+          </label>
+        </div>
+        <div id="book-list" class="book-list" aria-live="polite">
+          <p class="empty-state">Your shelf is getting ready...</p>
+        </div>
+      </section>
+    </section>
+    <p class="footnote">A work in progress. For now, just the basics.</p>
+  </main>
+</body>
+</html>
