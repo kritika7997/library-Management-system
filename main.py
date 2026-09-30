@@ -1,5 +1,6 @@
 from pathlib import Path
 from contextlib import contextmanager
+import os
 import sqlite3
 from typing import Iterator
 
@@ -10,7 +11,7 @@ from pydantic import BaseModel, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / "library.db"
+DEFAULT_DATABASE_PATH = BASE_DIR / "library.db"
 
 app = FastAPI(title="Little Library")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
@@ -27,7 +28,11 @@ class AvailabilityUpdate(BaseModel):
 
 
 def connect_database() -> sqlite3.Connection:
-    connection = sqlite3.connect(DATABASE_PATH)
+    database_path = Path(os.getenv("LIBRARY_DB_PATH", str(DEFAULT_DATABASE_PATH))).expanduser()
+    if not database_path.is_absolute():
+        database_path = (BASE_DIR / database_path).resolve()
+
+    connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     return connection
 
