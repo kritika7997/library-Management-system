@@ -1,6 +1,6 @@
+"""Contract tests pinning the API behavior documented in HLD.md / LLD.md."""
 import pytest
 
-"""Contract tests pinning the API behavior documented in HLD.md / LLD.md."""
 BOOK_KEYS = {"id", "title", "author", "isbn", "is_available"}
 
 
