@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from contextlib import contextmanager
 import sqlite3
@@ -10,7 +11,7 @@ from pydantic import BaseModel, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / "library.db"
+DEFAULT_DATABASE_PATH = BASE_DIR / "library.db"
 
 app = FastAPI(title="Little Library")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
@@ -26,8 +27,14 @@ class AvailabilityUpdate(BaseModel):
     is_available: bool
 
 
+def get_database_path() -> Path:
+    """Return the database file path; LIBRARY_DB_PATH overrides the default (used by tests)."""
+    override = os.environ.get("LIBRARY_DB_PATH")
+    return Path(override) if override else DEFAULT_DATABASE_PATH
+
+
 def connect_database() -> sqlite3.Connection:
-    connection = sqlite3.connect(DATABASE_PATH)
+    connection = sqlite3.connect(get_database_path())
     connection.row_factory = sqlite3.Row
     return connection
 

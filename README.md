@@ -24,5 +24,14 @@ Open http://127.0.0.1:8000. The SQLite database (`library.db`) is created beside
 
 - Member accounts, loans, due dates, or fines
 - Editing or removing books
-- Authentication, authorization, or automated tests
+- Authentication or authorization
 - A production-ready frontend or deployment setup
+
+## Tests
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
+Tests use an isolated temporary database via the `LIBRARY_DB_PATH` environment variable. GitHub Actions (`.github/workflows/ci.yml`) runs them on every push and pull request.
