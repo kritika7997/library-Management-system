@@ -91,3 +91,21 @@ def test_home_serves_index_html(client):
     response = client.get("/")
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
+
+
+def test_add_book_rejects_overlong_author_and_isbn(client):
+    assert create_book(client, author="a" * 201).status_code == 422
+    assert create_book(client, isbn="1" * 33).status_code == 422
+
+
+def test_update_availability_can_restore_book(client):
+    book_id = create_book(client).json()["id"]
+    client.patch(f"/api/books/{book_id}/availability", json={"is_available": False})
+    response = client.patch(f"/api/books/{book_id}/availability", json={"is_available": True})
+    assert response.status_code == 200
+    assert response.json()["is_available"] is True
+
+
+def test_update_availability_rejects_non_integer_id(client):
+    response = client.patch("/api/books/abc/availability", json={"is_available": True})
+    assert response.status_code == 422
