@@ -1,5 +1,5 @@
 # Little Library
-
+ 
 A small library-management starter built with plain HTML, CSS, and JavaScript, FastAPI, and SQLite. The frontend is intentionally an MVP, not a finished library system.
 
 ## Run locally on Windows
@@ -24,5 +24,14 @@ Open http://127.0.0.1:8000. The SQLite database (`library.db`) is created beside
 
 - Member accounts, loans, due dates, or fines
 - Editing or removing books
-- Authentication, authorization, or automated tests
+- Authentication or authorization
 - A production-ready frontend or deployment setup
+
+## Tests and CI
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
+Tests run against a temporary SQLite file. The app reads the database location from the optional `DATABASE_PATH` environment variable (default: `library.db` beside `main.py`), so tests never touch your local data. GitHub Actions (`.github/workflows/ci.yml`) runs the same suite on every pull request and on pushes to `master`.

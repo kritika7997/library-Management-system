@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from contextlib import contextmanager
 import sqlite3
@@ -10,7 +11,7 @@ from pydantic import BaseModel, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / "library.db"
+DATABASE_PATH = Path(os.environ.get("DATABASE_PATH", BASE_DIR / "library.db"))
 
 app = FastAPI(title="Little Library")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
