@@ -1,4 +1,4 @@
-# Little Library
+# Little Library 
 
 A small library-management starter built with plain HTML, CSS, and JavaScript, FastAPI, and SQLite. The frontend is intentionally an MVP, not a finished library system.
 
