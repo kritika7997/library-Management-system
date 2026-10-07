@@ -57,7 +57,10 @@ def server():
 @pytest.fixture(scope="session")
 def browser():
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch()
+        browser = playwright.chromium.launch(
+            headless=not os.environ.get("HEADED"),
+            slow_mo=int(os.environ.get("SLOW_MO", "0")),
+        )
         yield browser
         browser.close()
 
