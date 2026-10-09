@@ -25,4 +25,4 @@ Open http://127.0.0.1:8000. The SQLite database (`library.db`) is created beside
 - Member accounts, loans, due dates, or fines
 - Editing or removing books
 - Authentication, authorization, or automated tests
-- A production-ready frontend or deployment setup
+- A production-ready frontend or deployment setup 
